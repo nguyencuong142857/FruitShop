@@ -63,7 +63,7 @@ public class FruitBO {
     public void shopping() {
         ArrayList<Fruit> listOrder = new ArrayList<>();
         while (true) {
-            int item = displayFruits();
+            int item = getItemQuantity();
             if (item == -1) {
                 System.out.println("Out of stock.");
                 return;
@@ -81,13 +81,6 @@ public class FruitBO {
                 }
 
             }
-            if (listOrder.isEmpty()) {
-                System.out.println("No orders");
-            } else {
-                displayListOrder(listOrder);
-                String name = setName();
-                orders.put(name, listOrder);
-            }
             String choiceYorN = Validation.getString(
                     "Do you want to continue? (Y/N): ",
                     "messageErrorInvalid",
@@ -95,6 +88,13 @@ public class FruitBO {
             if (choiceYorN.equalsIgnoreCase("N")) {
                 break;
             }
+        }
+        if (listOrder.isEmpty()) {
+            System.out.println("No orders");
+        } else {
+            displayListOrder(listOrder);
+            String name = setName();
+            orders.put(name, listOrder);
         }
     }
 
@@ -105,7 +105,7 @@ public class FruitBO {
         return name + "#" + count;
     }
 
-    public int displayFruits() {
+    public int getItemQuantity() {
         int countItem = 0;
         if (fruits.isEmpty()) {
             return -1;
@@ -122,8 +122,8 @@ public class FruitBO {
         if (countItem == 0) {
             return -1;
         }
-        int item = Validation.getInt("Enter item: ", "invalid", "invalid", 1, countItem);
-        return item;
+        int itemQuantity = Validation.getInt("Enter item: ", "invalid", "invalid", 1, countItem);
+        return itemQuantity;
 
     }
 
