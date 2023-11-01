@@ -32,7 +32,7 @@ public class FruitBO {
         this.orders = orders;
     }
 
-    public Fruit getFruit(int item) {
+    private Fruit getFruit(int item) {
         int count = 0;
         for (Fruit fruit : fruits) {
             if (fruit.getQuantity() != 0) {
@@ -45,7 +45,7 @@ public class FruitBO {
         return null;
     }
 
-    public Fruit checkFruitInOrder(ArrayList<Fruit> listOrder, String id) {
+    private Fruit checkFruitInOrder(ArrayList<Fruit> listOrder, String id) {
         for (Fruit fruit : listOrder) {
             if (fruit.getCode().equalsIgnoreCase(id)) {
                 return fruit;
@@ -98,14 +98,14 @@ public class FruitBO {
         }
     }
 
-    public String setName() {
+    private String setName() {
         String name = Validation.getString("Enter name: ", "invalid", Constant.REGEX_NAME);
         int count = 0;
         count = orders.keySet().stream().map((name_key) -> name_key.split("#")[0]).filter((real_name) -> (name.equals(real_name))).map((_item) -> 1).reduce(count, Integer::sum);
         return name + "#" + count;
     }
 
-    public int getItemQuantity() {
+    private int getItemQuantity() {
         int countItem = 0;
         if (fruits.isEmpty()) {
             return -1;
@@ -127,7 +127,7 @@ public class FruitBO {
 
     }
 
-    public void displayListOrder(ArrayList<Fruit> listOrder) {
+    private void displayListOrder(ArrayList<Fruit> listOrder) {
         double total = 0;
         System.out.printf("%15s%15s%15s%15s\n", "Product", "Quantity", "Price", "Amount");
         total = listOrder.stream().map((fruit) -> {
