@@ -80,12 +80,16 @@ public class FruitBO {
     }
 
     public void displayListOrder() {
-        orders.forEach((name, listOrder) -> {
-            System.out.println("Customer: " + name.split("#")[0]);
-            displayListOrder(listOrder);
-        });
+        if (!orders.isEmpty()) {
+            orders.forEach((name, listOrder) -> {
+                System.out.println("Customer: " + name.split("#")[0]);
+                displayListOrder(listOrder);
+            });
+        } else {
+            System.out.println("No orders");
+        }
     }
-    
+
     public final void generateFruit() {
         fruits.add(new Fruit("F1", "Chuoi", 2000, 3, "Hanoi"));
         fruits.add(new Fruit("F2", "Buoi", 4000, 6, "Hanoi"));
