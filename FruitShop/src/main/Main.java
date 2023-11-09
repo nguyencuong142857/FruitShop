@@ -7,6 +7,8 @@ package main;
 
 import bo.FruitBO;
 import constans.Constant;
+import entity.Fruit;
+import java.util.ArrayList;
 import utils.Validation;
 
 /**
@@ -21,7 +23,6 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
         FruitBO fruitBO = new FruitBO();
-        fruitBO.generateFruit();
         while (true) {
             System.out.println("1. Create Fruit");
             System.out.println("2. View orders");
@@ -30,26 +31,54 @@ public class Main {
             int choice = Validation.getInt("Enter choice: ", "invalid", "invalid", 1, 4);
             switch (choice) {
                 case 1:
-                    while (true) {
+                    String choiceYorN;
+                    do {
                         if (fruitBO.createFruit()) {
                             System.out.println("Add ok!!");
                         } else {
                             System.out.println("Not ok!!");
                         }
-                        String choiceYorN = Validation.getString(
+
+                        choiceYorN = Validation.getString(
                                 "Do you want to continue? (Y/N): ",
                                 "messageErrorInvalid",
                                 Constant.REGEX_YES_OR_NO);
-                        if (choiceYorN.equalsIgnoreCase("N")) {
-                            break; // Kết thúc vòng lặp nếu người dùng chọn "N" hoặc "n"
-                        }
-                    }
+                    } while (choiceYorN.equalsIgnoreCase("Y"));
                     break;
                 case 2:
-                    fruitBO.viewOrder();
+                    fruitBO.displayListOrder();
                     break;
                 case 3:
-                    fruitBO.shopping();
+                    ArrayList<Fruit> listOrder = new ArrayList<>();
+                    do {
+                        System.out.printf("%-5s %-10s $%-9s %-10s %-10s%n", "Item", "Name", "Price", "Quantity", "Origin");
+                        int item = fruitBO.getItemQuantity();
+                        if (item == -1) {
+                            System.err.println("Out of stock.");
+                            break;
+                        }
+                        Fruit fruit = fruitBO.getFruit(item);
+                        System.out.println("You selected: " + fruit.getName());
+
+                        int quantity = Validation.getInt("Enter quantity:", "0 to " + fruit.getQuantity(), "invalid", 1, fruit.getQuantity());
+                        fruit.setQuantity(fruit.getQuantity() - quantity);
+
+                        Fruit fruitInOrder = fruitBO.checkFruitInOrder(listOrder, fruit.getCode());
+
+                        if (fruitInOrder != null) {
+                            fruitInOrder.setQuantity(fruitInOrder.getQuantity() + quantity);
+                        } else {
+                            listOrder.add(new Fruit(fruit.getCode(), fruit.getName(), fruit.getPrice(), quantity, fruit.getOrigin()));
+                        }
+                        choiceYorN = Validation.getString(
+                                "Do you want to continue? (Y/N): ",
+                                "messageErrorInvalid",
+                                Constant.REGEX_YES_OR_NO);
+                    } while (choiceYorN.equalsIgnoreCase("Y"));
+                    if (!listOrder.isEmpty()) {
+                        String name = fruitBO.setName(Validation.getString("Enter name: ", "invalid", Constant.REGEX_NAME));
+                        fruitBO.addOrder(listOrder, name);
+                    }
                     break;
                 case 4:
                     return;
